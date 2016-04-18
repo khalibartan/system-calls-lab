@@ -12,11 +12,16 @@ int main(){
     sprintf(id, "%d", pid);
     strcat(path, id);
     int server = open(FIFO_S, O_WRONLY);
-    write(server, path, sizeof(char)*strlen(path));
+    FILE *ser = fdopen(server, "w");
+    fprintf(ser,"%s",path);
+    fclose(ser);
+    printf("%d",pid);
     mkfifo(path, 0600);
     int client  = open(path, O_RDONLY);
+    FILE *cli = fdopen(client, "r");
     char buff[1000];
-    read(client, buff, sizeof(buff));
+    fscanf(cli,"%s",buff);
+    fclose(cli);
     printf("This is client , got message: %s\n",buff);
     close(server);
     close(client);
